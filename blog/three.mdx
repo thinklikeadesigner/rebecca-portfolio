@@ -1,0 +1,310 @@
+1.  Import your new styles into your `Layout` component and apply them to the site title paragraph you added.
+
+src/components/layout.js
+
+Copysrc/components/layout.js: copy code to clipboard`
+
+import  *  as  React  from  'react'
+
+import  {  Link, useStaticQuery, graphql }  from  'gatsby'
+
+import  {
+
+ container,
+
+ heading,
+
+ navLinks,
+
+ navLinkItem,
+
+ navLinkText,
+
+ siteTitle,
+
+}  from  './layout.module.css'
+
+const  Layout  =  ({ pageTitle, children })  =>  {
+
+  const data =  useStaticQuery(graphql`
+
+ query {
+
+ site {
+
+ siteMetadata {
+
+ title
+
+ }
+
+ }
+
+ }
+
+  `)
+
+  return  (
+
+  <div className={container}>
+
+  <title>{pageTitle}  |  {data.site.siteMetadata.title}</title>
+
+  <header className={siteTitle}>{data.site.siteMetadata.title}</header>
+
+  <nav>
+
+  <ul className={navLinks}>
+
+  <li className={navLinkItem}>
+
+  <Link to="/" className={navLinkText}>
+
+  Home
+
+  </Link>
+
+  </li>
+
+  <li className={navLinkItem}>
+
+  <Link to="/about" className={navLinkText}>
+
+  About
+
+  </Link>
+
+  </li>
+
+  </ul>
+
+  </nav>
+
+  <main>
+
+  <h1 className={heading}>{pageTitle}</h1>
+
+  {children}
+
+  </main>
+
+  </main>
+
+  )
+
+}
+
+export  default  Layout
+
+`
+
+When your browser reloads, you should see your new styles applied to your site title.
+
+[![A screenshot of the home page in a web browser. Now the site title paragraph is styled to be larger and gray.](https://www.gatsbyjs.com/static/9c7c3c5a1ad1f33034de167ceb175642/321ea/index-page-with-site-title-styled.png "A screenshot of the home page in a web browser. Now the site title paragraph is styled to be larger and gray.")](https://www.gatsbyjs.com/static/9c7c3c5a1ad1f33034de167ceb175642/8b69f/index-page-with-site-title-styled.png)
+
+Congratulations, you've just used GraphQL to pull data into your site! Try changing the site title in your `gatsby-config.js` file and see your site update in the browser.
+
+[](https://www.gatsbyjs.com/docs/tutorial/part-4/#queries-in-page-components-create-a-blog-page-with-a-list-of-post-filenames)Queries in page components: Create a blog page with a list of post filenames
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+So far, your site has a few static landing pages: the Home page and the About page. The next step is to build out the actual blog page!
+
+Eventually, your blog page will link to separate pages for each of your posts. But there's a lot to learn to achieve that, so you'll be working up to that goal over the next few parts of the Tutorial (Parts 4, 5, and 6).
+
+In this part, you'll create a blog page that lists the filenames for your posts.
+
+### [](https://www.gatsbyjs.com/docs/tutorial/part-4/#task-create-a-new-blog-page)Task: Create a new blog page
+
+Start by setting up the skeleton for your new blog page component.
+
+1.  Create a new file: `src/pages/blog.js`. Define and export a new page component for your blog page. Use your existing `Layout` component to add some basic structure.
+
+src/pages/blog.js
+
+Copysrc/pages/blog.js: copy code to clipboard`
+
+import  *  as  React  from  'react'
+
+import  Layout  from  '../components/layout'
+
+const  BlogPage  =  ()  =>  {
+
+  return  (
+
+  <Layout pageTitle="My Blog Posts">
+
+  <p>My cool posts will go in here</p>
+
+  </Layout>
+
+  )
+
+}
+
+export  default  BlogPage
+
+`
+
+1.  Add a link to your new blog page to the navigation bar in your `Layout` component:
+
+src/components/layout.js
+
+Copysrc/components/layout.js: copy code to clipboard`
+
+// ... import statements
+
+const  Layout  =  ({ pageTitle, children })  =>  {
+
+  const data =  useStaticQuery(graphql`
+
+ query {
+
+ site {
+
+ siteMetadata {
+
+ title
+
+ }
+
+ }
+
+ }
+
+  `)
+
+  return  (
+
+  <div className={container}>
+
+  <title>{pageTitle}  |  {data.site.siteMetadata.title}</title>
+
+  <header className={siteTitle}>{data.site.siteMetadata.title}</header>
+
+  <nav>
+
+  <ul className={navLinks}>
+
+  <li className={navLinkItem}>
+
+  <Link to="/" className={navLinkText}>
+
+  Home
+
+  </Link>
+
+  </li>
+
+  <li className={navLinkItem}>
+
+  <Link to="/about" className={navLinkText}>
+
+  About
+
+  </Link>
+
+  </li>
+
+  <li className={navLinkItem}>
+
+  <Link to="/blog" className={navLinkText}>
+
+  Blog
+
+  </Link>
+
+  </li>
+
+  </ul>
+
+  </nav>
+
+  <main>
+
+  <h1 className={heading}>{pageTitle}</h1>
+
+  {children}
+
+  </main>
+
+  </div>
+
+  )
+
+}
+
+export  default  Layout
+
+`
+
+1.  Now, if you go to `localhost:8000/blog` in your web browser, you should see your new blog page skeleton, and there should be a link to the blog page in your navigation bar.
+
+[![A screenshot of the blog page in a web browser.](https://www.gatsbyjs.com/static/0155c95a8675b615827ac15b326ee99a/321ea/blog-page-skeleton.png "A screenshot of the blog page in a web browser.")](https://www.gatsbyjs.com/static/0155c95a8675b615827ac15b326ee99a/07d37/blog-page-skeleton.png)
+
+### [](https://www.gatsbyjs.com/docs/tutorial/part-4/#task-create-some-mdx-blog-posts)Task: Create some MDX blog posts
+
+Now that you have a blog page, it's time to create some blog posts! For your site, you'll store each blog post as a separate file inside of a folder in your project.
+
+1.  Create a new directory called `blog` at the top level of your project folder.
+
+2.  Create three new files in the `blog` directory: one for each post. It doesn't matter what you name them, as long as they end with the `.mdx` extension. (You'll learn more about the powers of MDX in Part 5.) You can leave the files empty for now.
+
+[![A screenshot of the VS Code Explorer pane. There's a new top-level directory called "blog", which contains three new files: "another-post.mdx", "my-first-post.mdx", and "yet-another-post.mdx".](https://www.gatsbyjs.com/static/54dd7a9f2f7d387ff78ebbc5e1f2f566/89a37/blog-posts-folder-structure.png "A screenshot of the VS Code Explorer pane. There's a new top-level directory called "blog", which contains three new files: "another-post.mdx", "my-first-post.mdx", and "yet-another-post.mdx".")](https://www.gatsbyjs.com/static/54dd7a9f2f7d387ff78ebbc5e1f2f566/89a37/blog-posts-folder-structure.png)
+
+### [](https://www.gatsbyjs.com/docs/tutorial/part-4/#task-use-graphiql-to-build-the-query-1)Task: Use GraphiQL to build the query
+
+Now that you have some posts saved to your local filesystem, it's time to pull those files into the Gatsby data layer. To do that, you'll use a plugin called `gatsby-source-filesystem`.
+
+**Note:** Remember the process for adding a plugin to your site from [Part 3](https://www.gatsbyjs.com/docs/tutorial/part-3)? The first step was to **install** the plugin.
+
+If you've been following along from the beginning, you should already have installed `gatsby-source-filesystem` in Part 3 (because you needed it for adding static images with `gatsby-plugin-image`).
+
+Otherwise, you can install the plugin by running the following command from the command line:
+
+Copycopy code to clipboard`
+
+npm  install gatsby-source-filesystem
+
+`
+
+1.  Configure `gatsby-source-filesystem` in your `gatsby-config.js` file. Since `gatsby-source-filesystem` requires some additional configuration options, you'll use a configuration object instead of a string. The code example below shows how to "source" files from your `blog` directory (in other words, how to add them to the data layer).
+
+gatsby-config.js
+
+Copygatsby-config.js: copy code to clipboard`
+
+module.exports  =  {
+
+ siteMetadata:  {
+
+ title:  "My First Gatsby Site",
+
+  },
+
+ plugins:  [
+
+  "gatsby-plugin-gatsby-cloud",
+
+  "gatsby-plugin-image",
+
+  "gatsby-plugin-sharp",
+
+  {
+
+ resolve:  "gatsby-source-filesystem",
+
+ options:  {
+
+ name:  `blog`,
+
+ path:  `${__dirname}/blog`,
+
+  }
+
+  },
+
+  ],
+
+};
+
+`
